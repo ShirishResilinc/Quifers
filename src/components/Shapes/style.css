@@ -1,0 +1,12 @@
+.shape-container {
+    position: absolute;
+}
+
+.shape-container .shape-editor-area {
+    position: relative;
+}
+
+.shape-container .shape-editor-area .shape-editor-area-position-editor-section {
+    position: absolute;
+    top: -10px;
+}
