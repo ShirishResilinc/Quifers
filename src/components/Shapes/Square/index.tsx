@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { ShapeConfig, ShapeSizeResizer } from "../ShapeEditor";
-import Rectangle, { RectangleProps } from '../Rectangle';
+import Rectangle from '../Rectangle';
 
 export interface SquareProps extends ShapeConfig, ShapeSizeResizer {
 }

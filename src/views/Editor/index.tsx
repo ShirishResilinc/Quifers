@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShapeEditor, ShapeConfig } from "../../components/Shapes/ShapeEditor";
+import { ShapeEditor, ShapeConfig, Shape } from "../../components/Shapes/ShapeEditor";
 import { FileSelector } from '../../components/FileSelector';
 import { AddShape } from '../../components/AddShape';
 
@@ -19,11 +19,17 @@ export interface EditorProps {
 export class Editor extends React.Component<any> {
 
     onShapeUpdateHandler = (updates: ShapeConfig) => {
-
+        this.props.editorStore.updateFile({
+            ...this.props.editorStore.selectedFile,
+            shapeConfig: {
+                ...this.props.editorStore.selectedFile,
+                ...updates
+            }
+        })
     }
 
     onAddShapeHandler = (shape: string) => {
-
+        this.props.editorStore.addShape()
     }
 
     fileSelectorHandler = (fileName: string) => {
@@ -35,15 +41,16 @@ export class Editor extends React.Component<any> {
     }
 
     render() {
+
         return (
             <div className="editor-container">
                 <div className="editor-toolbar">
-                    <FileSelector selectedFileName={this.props.selectedFile.name} files={this.props.fileNames} onFileSelect={(fileName) => this.fileSelectorHandler(fileName)} />
+                    <FileSelector selectedFileName={this.props.editorStore.selectedFile.name} files={this.props.editorStore.fileNames} onFileSelect={(fileName) => this.fileSelectorHandler(fileName)} />
                     <AddShape onAddShape={(shape) => this.onAddShapeHandler(shape)} />
-                    <FileSaver fileName={this.props.selectedFile.name} onFileSave={(fileName) => this.fileSaveHandler(fileName)} />
+                    <FileSaver fileName={this.props.editorStore.selectedFile.name} onFileSave={(fileName) => this.fileSaveHandler(fileName)} />
                 </div>
                 <div className="editor-area">
-                    {this.props.selectedFile.shapes.map(shape =>
+                    {(this.props.editorStore.selectedFile.shapes || []).map((shape: Shape) =>
                         <ShapeEditor
                             key={shape.id}
                             id={shape.id}

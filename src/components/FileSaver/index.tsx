@@ -5,8 +5,6 @@ export interface FileSaverProps {
     onFileSave: (shape: string) => void;
 }
 
-const shapes = ['Rectangle', 'Square'];
-
 export function FileSaver(props: FileSaverProps) {
 
     const [fileName, setFileName] = useState('');
@@ -16,7 +14,7 @@ export function FileSaver(props: FileSaverProps) {
     }
 
     useEffect(() => {
-        setFileName(props.fileName);
+        setFileName(props.fileName || '');
     }, [props.fileName])
 
     const onAddClickHandler = () => {
@@ -24,10 +22,8 @@ export function FileSaver(props: FileSaverProps) {
     }
 
     return (
-        <div className="select-shape-container">
-            <select value={fileName} onChange={(e) => onSelectChangeHandler(e)} placeholder="Select Shape">
-                {shapes.map(shape => (<option key={shape} value={shape}>{shape}</option>))}
-            </select>
+        <div className="file-saver-container">
+            <input value={fileName} onChange={(e) => onSelectChangeHandler(e)} placeholder="Enter File Name"/>
             <button disabled={!fileName} type="button" onClick={() => onAddClickHandler()}>Add</button>
         </div>
     )

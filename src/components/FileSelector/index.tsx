@@ -14,7 +14,7 @@ export function FileSelector(props: FileSelectorProps) {
         setSelectedFile(e.target.value);
     }
 
-    const onAddClickHandler = () => {
+    const onSelectClickHandler = () => {
         props.onFileSelect(selectedFile);
     }
 
@@ -24,10 +24,10 @@ export function FileSelector(props: FileSelectorProps) {
 
     return (
         <div className="select-file-container">
-            <select disabled={!props.files.length} value={selectedFile} onChange={(e) => onSelectChangeHandler(e)} placeholder="Select Shape">
+            <select disabled={!props.files.length} value={selectedFile} onChange={(e) => onSelectChangeHandler(e)} placeholder="Select File">
                 {props.files.map(shape => (<option key={shape} value={shape}>{shape}</option>))}
             </select>
-            <button disabled={!selectedFile} type="button" onClick={() => onAddClickHandler()}>Add</button>
+            <button disabled={!selectedFile} type="button" onClick={() => onSelectClickHandler()}>Select</button>
         </div>
     )
 }

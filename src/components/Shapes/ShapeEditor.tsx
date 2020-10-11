@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { PositionEditor } from '../PositionEditor';
 import './style.css';
 
@@ -60,13 +60,15 @@ export class ShapeEditor extends React.Component<ShapeProps> {
             this.setState({
                 loading: true
             })
-            import(`./${this.props.shape.toLocaleLowerCase()}`).then((cmp) => {
+            try {
                 this.setState((prevState) => ({
-                    ...this.state, component: cmp.default
+                    ...this.state, 
+                    component: React.lazy(() => import('../Shapes/' + this.props.shape))
                 }));
-            }).finally(() => {
+            } finally {
                 this.setState((prevState) => ({ ...prevState, loading: false }))
-            })
+            }
+            
         }
     }
 
@@ -86,7 +88,6 @@ export class ShapeEditor extends React.Component<ShapeProps> {
 
     render() {
         const C = this.state.component as any;
-
         return (
             <div className="shape-container" style={{
                 top: (this.props.shapeConfig || {}).x || 0,
@@ -94,19 +95,23 @@ export class ShapeEditor extends React.Component<ShapeProps> {
             }}>
                 {
                     !this.state.loading &&
-                    <div className="shape-editor-area" >
-                        <div className="shape-editor-area-position-editor-section">
-                            <PositionEditor
-                                xPos={this.props.shapeConfig.x}
-                                yPos={this.props.shapeConfig.y}
-                                onPosChange={(val: any) => this.onPositionUpdated(val)}
-                            />
+                    (
+                        <Suspense fallback={<div>'Shape is loading...'</div>}>
+                        <div className="shape-editor-area" >
+                            <div className="shape-editor-area-position-editor-section">
+                                <PositionEditor
+                                    xPos={this.props.shapeConfig.x}
+                                    yPos={this.props.shapeConfig.y}
+                                    onPosChange={(val: any) => this.onPositionUpdated(val)}
+                                />
+                            </div>
+                            <C {...{
+                                ...this.props.shapeConfig,
+                                onResize: (val: ShapeSize) => { this.handleShapeResize(val) }
+                            }} />
                         </div>
-                        <C {...{
-                            ...this.props.shapeConfig,
-                            onResize: (val: ShapeSize) => { this.handleShapeResize(val) }
-                        }} />
-                    </div>
+                        </Suspense>
+                    )
                 }
                 {
                     this.state.loading && 'Shape is loading...'

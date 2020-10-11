@@ -9,13 +9,27 @@ export class File {
 }
 
 class EditorStore {
-    @observable.shallow files: any[] = []
+    @observable files: any[] = [{
+        id: 0,
+        name: 'File',
+        shapes: [{
+            id: 0,
+            shape: 'Rectangle',
+            shapeConfig: {
+                x: 100,
+                y: 100,
+                height: 100,
+                width: 100
+            }
+        }
+        ]
+    }];
     @observable loading = false;
-    @observable selectedFile: File = null;
-    @computed selectedFile = () => {
-        return this.files.find((file: File) => file.name === (this.selectedFile || {} as File).name);
+    @observable selectedFileName = 'File';
+    @computed get selectedFile() {
+        return this.files.find((file: File) => file.name === this.selectedFileName) || {};
     }
-    @computed fileNames = () => {
+    @computed get fileNames() {
         return this.files.map(({ name }) => name);
     }
 
@@ -23,7 +37,38 @@ class EditorStore {
     setSelectedFileName(fileName: string) {
         this.selectedFileName = fileName;
     }
-    
+
+    @action
+    addShape(shape: string) {
+        const fileIndex = this.files.findIndex((file) => this.selectedFileName === file.name);
+        if (fileIndex !== -1) {
+            this.files[fileIndex].shapes.push({
+                id: this.files[fileIndex].shapes.length + 1,
+                shape: 'Rectangle',
+                shapeConfig: {
+                    x: 100,
+                    y: 100,
+                    height: 100,
+                    width: 100
+                }
+            })
+        }
+    }
+
+    @action
+    updateShape(shape: Shape) {
+        const fileIndex = this.files.findIndex((file) => this.selectedFileName === file.name);
+        if (fileIndex !== -1) {
+            const shapeIndex = this.files[fileIndex].shapes.findIndex((shapeObj:Shape) => shapeObj.id === shape.id)
+            this.files[fileIndex].shapes.splice(fileIndex, 1, ).push({
+                ...this.files[fileIndex].shapes[shapeIndex],
+                shapeConfig: {
+                    ...this.files[fileIndex].shapes[shapeIndex].shapeConfig
+                }
+            })
+        }
+    }
+
     fetchSavedFiles() {
         return axios.get('/files')
     }

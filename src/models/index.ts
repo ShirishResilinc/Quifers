@@ -1,5 +1,7 @@
 import editorStore from './EditorStore';
 
-export default {
+const store = {
     editorStore
 }
+
+export default store;

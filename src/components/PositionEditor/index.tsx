@@ -9,14 +9,14 @@ export interface PositionEditorProps {
 }
 
 export function PositionEditor(props: PositionEditorProps) {
-    const onPosChange = React.useCallback((changedValue: number, { xPos, yPos }: { xPos: number, yPos: number }, specificPosChange?: (pos: number) => void) => {
+    const onPosChange = (changedValue: number, { xPos, yPos }: { xPos: number, yPos: number }, specificPosChange?: (pos: number) => void) => {
         if (!!specificPosChange) {
             specificPosChange(changedValue);
         }
         if (!!props.onPosChange) {
             props.onPosChange(xPos, yPos);
         }
-    }, []);
+    };
 
     return (
         <div className="position-editor-container">
